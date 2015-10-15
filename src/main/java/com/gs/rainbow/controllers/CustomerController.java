@@ -3,8 +3,6 @@ package com.gs.rainbow.controllers;
 import com.gs.rainbow.domain.Customer;
 import com.gs.rainbow.services.CustomerService;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,4 +27,4 @@ public class CustomerController {
 		return customerService.listAllCustomers();
 	}
 
-}
+}	
