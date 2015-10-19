@@ -21,10 +21,11 @@ public class CustomerController {
 		this.customerService = customerService;
 	}
 
+	/*
 	@RequestMapping(value="/customers", method=RequestMethod.GET)
 	public @ResponseBody Iterable<Customer> list(Model model) {
 		model.addAttribute("customers", customerService.listAllCustomers());
 		return customerService.listAllCustomers();
-	}
+	}*/
 
 }	

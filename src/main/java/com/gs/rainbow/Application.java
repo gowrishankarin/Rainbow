@@ -66,3 +66,10 @@ public class Application {
 		};
 	}
 }
+
+
+/***********REFERENCES**********/
+// https://www.safaribooksonline.com/blog/2013/09/30/rest-hypermedia/
+// https://springframework.guru/using-h2-and-oracle-with-spring-boot/#comment-415
+
+

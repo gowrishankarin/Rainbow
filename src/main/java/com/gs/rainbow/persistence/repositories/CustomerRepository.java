@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -15,7 +16,10 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 	List<Customer> findByLastName(String lastName);
 }*/
 
-@RepositoryRestResource(collectionResourceRel = "customer", path = "customer")
+@RepositoryRestResource(collectionResourceRel = "customer", path = "customers")
 public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long> {
-	List<Customer> findByLastName(@Param("name") String name);
+	Page<Customer> findByLastName(@Param("name") String name);
+	
+	
+
 }

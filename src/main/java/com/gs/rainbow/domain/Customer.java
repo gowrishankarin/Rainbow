@@ -1,5 +1,8 @@
 package com.gs.rainbow.domain;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +17,9 @@ public class Customer {
 	
 	private String firstName;
 	private String lastName;
+	private Date creationTime;
+	
+	private LocalDate localDate;
 	
 	public String getFirstName() {
 		return firstName;
@@ -36,6 +42,7 @@ public class Customer {
 	public Customer(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.creationTime = new Date();
 	}
 
 	@Override
@@ -44,5 +51,13 @@ public class Customer {
 			"Cutomer[id=%d, firstName='%s', lastName='%s']", 
 			id, firstName, lastName
 		);
+	}
+
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
 	}
 }
