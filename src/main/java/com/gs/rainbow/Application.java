@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.gs.rainbow.cep.ComplexEvent;
+import com.gs.rainbow.cep.EventProcessor;
+import com.gs.rainbow.cep.EventWrap;
 import com.gs.rainbow.cep.reactors.Publisher;
 import com.gs.rainbow.cep.reactors.Receiver;
 import com.gs.rainbow.domain.Customer;
@@ -24,20 +27,74 @@ import reactor.bus.EventBus;
 @Configuration
 @ComponentScan ({
 	"com.gs.rainbow.persistence.events",
-	"com.gs.rainbow.cep.reactors"
+	"com.gs.rainbow.cep.events",
+	"com.gs.rainbow.cep.reactors",
+	"com.gs.rainbow.cep"
 })
 @EnableAutoConfiguration 
 public class Application implements CommandLineRunner {
+	
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+	
+	@Bean
+	Environment env() {
+		return Environment.initializeIfEmpty().assignErrorJournal();
+	}
+	
+	@Bean
+	EventBus createEventBus(Environment env) {
+		return EventBus.create(env, Environment.THREAD_POOL);
+	}
+	
+	@Autowired
+	private EventBus eventBus;
+	
+	@Autowired
+	private Receiver receiver;
+	
+	@Autowired
+	private Publisher publisher;
+	
+	@Autowired
+	private EventProcessor eventProcessor;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		eventBus.on($("customers"), receiver);
+		
+	}
 
 	@Bean
 	public CommandLineRunner demo(CustomerRepository repository) {
 		return (args) -> {
-			repository.save(new Customer("Jack", "Bauer"));
-			repository.save(new Customer("Chloe", "O'Brian"));
-			repository.save(new Customer("Kim", "Bauer"));
-			repository.save(new Customer("David", "Palmer"));
-			repository.save(new Customer("Michelle", "Dessler"));
+			
+			EventWrap eventWrap = new EventWrap<Customer>(
+				new Customer("Gilber", "Kahn"), ComplexEvent.MISC);
+			publisher.publishCustomers(eventWrap);
+			
+			eventWrap = new EventWrap<Customer>(
+				new Customer("Jack", "Bauer"), ComplexEvent.MISC);
+			publisher.publishCustomers(eventWrap);
+				
+			eventWrap = new EventWrap<Customer>(
+				new Customer("Michelle", "Dessler"), ComplexEvent.MISC);
+			publisher.publishCustomers(eventWrap);
+					
+					
+			eventWrap = new EventWrap<Customer>(
+				new Customer("David", "Palmer"), ComplexEvent.MISC);
+			publisher.publishCustomers(eventWrap);
+						
+			eventWrap = new EventWrap<Customer>(
+				new Customer("Kim", "Bauer"), ComplexEvent.MISC);
+			publisher.publishCustomers(eventWrap);
+
+			eventWrap = new EventWrap<Customer>(
+				new Customer("Chloe", "O'Brian"), ComplexEvent.MISC);
+			publisher.publishCustomers(eventWrap);
+
+
+
 
 			log.info("Customers found with findAll():");
 			log.info("-------------------------------");
@@ -65,31 +122,6 @@ public class Application implements CommandLineRunner {
 
 			log.info("");
 		};
-	}
-	
-	@Bean
-	Environment env() {
-		return Environment.initializeIfEmpty().assignErrorJournal();
-	}
-	
-	@Bean
-	EventBus createEventBus(Environment env) {
-		return EventBus.create(env, Environment.THREAD_POOL);
-	}
-	
-	@Autowired
-	private EventBus eventBus;
-	
-	@Autowired
-	private Receiver receiver;
-	
-	@Autowired
-	private Publisher publisher;
-	
-	@Override
-	public void run(String... args) throws Exception {
-		eventBus.on($("customers"), receiver);
-		publisher.publishCustomers(new Customer("Gowri", "Shankar"));
 	}
 	
 	public static void main(String[] args) throws InterruptedException {

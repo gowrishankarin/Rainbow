@@ -4,6 +4,7 @@ package com.gs.rainbow.cep.reactors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gs.rainbow.cep.EventWrap;
 import com.gs.rainbow.domain.Customer;
 
 import reactor.bus.Event;
@@ -16,14 +17,10 @@ public class Publisher {
 	@Autowired
 	EventBus eventBus;
 
-	//@Autowired
-	//CountDownLatch latch; 
-	
-	public void publishCustomers(Customer newCustomer) throws InterruptedException {
+	public void publishCustomers(EventWrap<Customer> newEvent) throws InterruptedException {
 
-		eventBus.notify("customers", Event.wrap(newCustomer));
-
-	//	latch.await();
+		eventBus.notify("customers", Event.wrap(newEvent));
 
 	}
+
 }

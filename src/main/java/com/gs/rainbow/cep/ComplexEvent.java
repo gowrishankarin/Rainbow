@@ -1,0 +1,17 @@
+package com.gs.rainbow.cep;
+
+
+public enum ComplexEvent {
+
+	BEFORE_GET,
+	AFTER_GET,
+	BEFORE_CREATE,
+	AFTER_CREATE,
+	BEFORE_UPDATE,
+	AFTER_UPDATE,
+	BEFORE_DELETE,
+	AFTER_DELETE,
+	MISC,
+	TEST
+
+}

@@ -3,13 +3,13 @@
 ## Scope
 
 **Environment**
- - Java - Spring Boot Client Server Application (Embedded Web Server) - Done v0.0.1
+ - Java - Spring Boot Client Server Application (Embedded Web Server) - **Done v0.0.1**
  - Python - Django Application
  - Ruby on Rails - RoR Client Server App
  - Scala (tentative)
 
 **Data Stores**
- - H2 - Done v0.0.1
+ - H2 - **Done v0.0.1**
  - H2 - MongoDB Integration
  - H2 - HSQL Integration
  - H2 - PSQL Integration
@@ -27,8 +27,9 @@
  - Apache Lucene
 
 **Complex Event Processor**
- - Event Handlers for Pre & Post Processing - Done v0.0.1
+ - Event Handlers for Pre & Post Processing - **Done v0.0.1**
  - Asynchronous, Non thread blocking events using Java Reactors
+ - Event Processor
 
 **Security**
  - OAuth 2.*
@@ -61,6 +62,7 @@
 
 ### Version 0.0.2
  - Asynchronous, Non thread blocking events using Reactors
+ - Event Processor Placeholder added.
 
 
 ### Version 0.0.1 - October 20, 2015 
@@ -77,3 +79,6 @@
 ### v0.0.1
  - Error handling when wrong parameters are sent as query params or path params or post params. 
  - Systems attempts to close DB second time while shutting the embedded webserver component.
+ 
+### v0.0.2
+ - Publisher is breaking with "This Dispatcher has been shut down" message while calling from Post and Pre Processing Event Handlers.
