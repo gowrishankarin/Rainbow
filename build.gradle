@@ -39,6 +39,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-rest")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa:1.2.6.RELEASE")
 	compile("com.h2database:h2:1.4.189")
+	compile("io.projectreactor:reactor-bus:2.0.6.RELEASE")
 	testCompile("junit:junit")
 }
 

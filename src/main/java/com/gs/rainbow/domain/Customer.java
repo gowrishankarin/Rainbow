@@ -1,6 +1,5 @@
 package com.gs.rainbow.domain;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -18,8 +17,6 @@ public class Customer {
 	private String firstName;
 	private String lastName;
 	private Date creationTime;
-	
-	private LocalDate localDate;
 	
 	public String getFirstName() {
 		return firstName;
