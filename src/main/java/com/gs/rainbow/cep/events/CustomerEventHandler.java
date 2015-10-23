@@ -14,6 +14,7 @@ import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
 import com.gs.rainbow.cep.ComplexEvent;
+import com.gs.rainbow.cep.EventProcessor;
 import com.gs.rainbow.cep.EventWrap;
 import com.gs.rainbow.cep.reactors.Publisher;
 import com.gs.rainbow.domain.Customer;
@@ -26,6 +27,9 @@ public class CustomerEventHandler {
 	
 	@Autowired
 	Publisher publisher;
+	
+	@Autowired
+	private EventProcessor eventProcessor;
 
 
 	@HandleBeforeCreate
@@ -38,18 +42,21 @@ public class CustomerEventHandler {
 	public void handleAfterCreate(Customer customer) {
 		log.info("This is fired AFTER creating Customer " + customer.getLastName());
 		
-		EventWrap<Customer> customerEvent = new EventWrap<Customer>(
-			customer, ComplexEvent.MISC);
+		/*EventWrap<Customer> customerEvent = new EventWrap<Customer>(
+				new Customer("Gary", "Kahn"), ComplexEvent.MISC);
 		
 		customer.setCreationTime(new Date());
 		
 		
 		try {
+			eventProcessor.createCustomerEvent(customer);
 			publisher.publishCustomers(customerEvent);
+			
+	
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@HandleBeforeSave // Update

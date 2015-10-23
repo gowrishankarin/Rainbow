@@ -1,6 +1,8 @@
 package com.gs.rainbow.cep.reactors;
 
 
+import java.util.concurrent.CountDownLatch;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,14 @@ public class Publisher {
 
 	@Autowired
 	EventBus eventBus;
+	
+	@Autowired
+	CountDownLatch latch;
 
 	public void publishCustomers(EventWrap<Customer> newEvent) throws InterruptedException {
 
 		eventBus.notify("customers", Event.wrap(newEvent));
+		latch.await();
 
 	}
 

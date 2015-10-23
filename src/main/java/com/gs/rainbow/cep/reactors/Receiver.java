@@ -1,5 +1,7 @@
 package com.gs.rainbow.cep.reactors;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class Receiver implements Consumer<Event<EventWrap<Customer>>> {
 	
 	@Autowired
 	EventProcessor eventProcessor;
+	
+	@Autowired
+	CountDownLatch latch;
 
 	public void accept(Event<EventWrap<Customer>> eventWrap) {
 		EventWrap<Customer> newEvent  = eventWrap.getData();
@@ -70,5 +75,6 @@ public class Receiver implements Consumer<Event<EventWrap<Customer>>> {
 				break;
 
 		}
+		latch.countDown();
 	}
 }

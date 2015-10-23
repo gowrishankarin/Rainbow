@@ -28,7 +28,7 @@
 
 **Complex Event Processor**
  - Event Handlers for Pre & Post Processing - **Done v0.0.1**
- - Asynchronous, Non thread blocking events using Java Reactors
+ - Asynchronous, Non thread blocking events using Java Reactors - **Done v0.0.1**
  - Event Processor
 
 **Security**
@@ -60,7 +60,8 @@
 
 ## Release: Capabilities and Features
 
-### Version 0.0.2
+### Version 0.0.2 - October 23, 2015
+
  - Asynchronous, Non thread blocking events using Reactors
  - Event Processor Placeholder added.
 

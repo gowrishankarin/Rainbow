@@ -2,6 +2,8 @@ package com.gs.rainbow;
 
 import static reactor.bus.selector.Selectors.$;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import com.gs.rainbow.cep.ComplexEvent;
 import com.gs.rainbow.cep.EventProcessor;
 import com.gs.rainbow.cep.EventWrap;
+import com.gs.rainbow.cep.events.CustomerEventHandler;
 import com.gs.rainbow.cep.reactors.Publisher;
 import com.gs.rainbow.cep.reactors.Receiver;
 import com.gs.rainbow.domain.Customer;
@@ -58,10 +61,19 @@ public class Application implements CommandLineRunner {
 	@Autowired
 	private EventProcessor eventProcessor;
 	
+	@Bean
+	public CountDownLatch latch() {
+		return new CountDownLatch(1);
+	}
+	
 	@Override
 	public void run(String... args) throws Exception {
 		eventBus.on($("customers"), receiver);
 		
+	}
+	
+	@Bean CustomerEventHandler customerEventHandler() {
+	    return new CustomerEventHandler();
 	}
 
 	@Bean

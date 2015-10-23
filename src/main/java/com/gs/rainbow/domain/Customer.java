@@ -7,7 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Customer {
 
 	@Id
@@ -34,7 +37,9 @@ public class Customer {
 		this.lastName = lastName;
 	}
 
-	protected Customer() {}
+	public Customer() {
+		this.creationTime = new Date();
+	}
 
 	public Customer(String firstName, String lastName) {
 		this.firstName = firstName;
