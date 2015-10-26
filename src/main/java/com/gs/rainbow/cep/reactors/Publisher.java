@@ -13,6 +13,7 @@ import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 
+
 @Service
 public class Publisher {
 
@@ -23,9 +24,11 @@ public class Publisher {
 	CountDownLatch latch;
 
 	public void publishCustomers(EventWrap<Customer> newEvent) throws InterruptedException {
-
+		// EXCEPTION HERE
 		eventBus.notify("customers", Event.wrap(newEvent));
-		latch.await();
+		//latch.await();
+		
+		
 
 	}
 

@@ -3,17 +3,25 @@ package com.gs.rainbow;
 import static reactor.bus.selector.Selectors.$;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 import com.gs.rainbow.cep.ComplexEvent;
 import com.gs.rainbow.cep.EventProcessor;
@@ -22,33 +30,37 @@ import com.gs.rainbow.cep.events.CustomerEventHandler;
 import com.gs.rainbow.cep.reactors.Publisher;
 import com.gs.rainbow.cep.reactors.Receiver;
 import com.gs.rainbow.domain.Customer;
+import com.gs.rainbow.messaging.rabbitmq.RabbitMQReceiver;
 import com.gs.rainbow.persistence.repositories.CustomerRepository;
 
 import reactor.Environment;
 import reactor.bus.EventBus;
 
-@Configuration
+
+
 @ComponentScan ({
 	"com.gs.rainbow.persistence.events",
 	"com.gs.rainbow.cep.events",
 	"com.gs.rainbow.cep.reactors",
 	"com.gs.rainbow.cep"
 })
-@EnableAutoConfiguration 
+@SpringBootApplication
 public class Application implements CommandLineRunner {
 	
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+	final static String queueName = "rainbow";
 	
 	@Bean
 	Environment env() {
 		return Environment.initializeIfEmpty().assignErrorJournal();
+		
 	}
 	
 	@Bean
 	EventBus createEventBus(Environment env) {
 		return EventBus.create(env, Environment.THREAD_POOL);
 	}
-	
+
 	@Autowired
 	private EventBus eventBus;
 	
@@ -70,10 +82,55 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		eventBus.on($("customers"), receiver);
 		
+		
 	}
 	
 	@Bean CustomerEventHandler customerEventHandler() {
 	    return new CustomerEventHandler();
+	}
+
+////////////////////////////////////////////////
+	//@Autowired
+	//AnnotationConfigApplicationContext context;
+
+	@Autowired
+	RabbitTemplate rabbitTemplate;
+
+	@Bean
+	Queue queue() {
+		return new Queue(queueName, false);
+	}
+
+	@Bean
+	TopicExchange exchange() {
+		return new TopicExchange("rainbow-exchange");
+	}
+
+	@Bean
+	Binding binding(Queue queue, TopicExchange exchange) {
+		return BindingBuilder.bind(queue).to(exchange).with(queueName);
+	}
+
+	@Bean
+	SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, 
+		MessageListenerAdapter listenerAdapter) {
+
+		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory);
+		container.setQueueNames(queueName);
+		container.setMessageListener(listenerAdapter);
+		return container;
+
+	}
+
+	@Bean
+	RabbitMQReceiver rabbitMQReceiver() {
+		return new RabbitMQReceiver();
+	}
+
+	@Bean
+	MessageListenerAdapter listenerAdapter(RabbitMQReceiver receiver) {
+		return new MessageListenerAdapter(receiver, "receiveMessage");
 	}
 
 	@Bean
@@ -121,7 +178,8 @@ public class Application implements CommandLineRunner {
 			Customer customer = repository.findOne(1L);
 			log.info("Customer found with findOne(1L):");
 			log.info("--------------------------------");
-			log.info(customer.toString());
+			if(null != customer)
+				log.info(customer.toString());
 			log.info("");
 
 
@@ -129,10 +187,20 @@ public class Application implements CommandLineRunner {
 			log.info("---------------------------------------------");
 
 			for (Customer bauer: repository.findByLastName("Bauer")) {
-				log.info(bauer.toString());
+				if(null != bauer)
+					log.info(bauer.toString());
 			}
 
 			log.info("");
+
+
+
+			rabbitTemplate.convertAndSend(queueName, "Hello from Rainbow");
+			rabbitMQReceiver().getLatch().await(10000, TimeUnit.MILLISECONDS);
+			
+			//context.close();
+
+
 		};
 	}
 	
@@ -140,6 +208,8 @@ public class Application implements CommandLineRunner {
 		
 		ApplicationContext appContext = SpringApplication.run(Application.class, args);
 		appContext.getBean(Environment.class).shutdown();
+		
+		
 		
 	}
 	

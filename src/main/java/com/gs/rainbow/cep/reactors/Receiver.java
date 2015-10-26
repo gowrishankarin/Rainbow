@@ -16,6 +16,8 @@ import com.gs.rainbow.persistence.repositories.CustomerRepository;
 import reactor.bus.Event;
 import reactor.fn.Consumer;
 
+
+
 @Service
 public class Receiver implements Consumer<Event<EventWrap<Customer>>> {
 
@@ -75,6 +77,6 @@ public class Receiver implements Consumer<Event<EventWrap<Customer>>> {
 				break;
 
 		}
-		latch.countDown();
+	//	latch.countDown();
 	}
 }

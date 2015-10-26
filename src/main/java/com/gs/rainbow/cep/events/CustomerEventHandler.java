@@ -39,24 +39,21 @@ public class CustomerEventHandler {
 	}
 
 	@HandleAfterCreate
-	public void handleAfterCreate(Customer customer) {
+	public void handleAfterCreate(Customer customer) throws InterruptedException {
 		log.info("This is fired AFTER creating Customer " + customer.getLastName());
 		
-		/*EventWrap<Customer> customerEvent = new EventWrap<Customer>(
-				new Customer("Gary", "Kahn"), ComplexEvent.MISC);
+		EventWrap<Customer> customerEvent = new EventWrap<Customer>(customer, ComplexEvent.MISC);
 		
 		customer.setCreationTime(new Date());
 		
-		
 		try {
-			eventProcessor.createCustomerEvent(customer);
+			// EXCEPTION HERE
 			publisher.publishCustomers(customerEvent);
-			
 	
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	@HandleBeforeSave // Update
