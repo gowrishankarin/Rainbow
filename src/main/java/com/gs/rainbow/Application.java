@@ -2,6 +2,7 @@ package com.gs.rainbow;
 
 import static reactor.bus.selector.Selectors.$;
 
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +16,9 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.support.converter.DefaultClassMapper;
+import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -116,6 +120,9 @@ public class Application implements CommandLineRunner {
 		MessageListenerAdapter listenerAdapter) {
 
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+		
+		
+		
 		container.setConnectionFactory(connectionFactory);
 		container.setQueueNames(queueName);
 		container.setMessageListener(listenerAdapter);
@@ -127,7 +134,26 @@ public class Application implements CommandLineRunner {
 	RabbitMQReceiver rabbitMQReceiver() {
 		return new RabbitMQReceiver();
 	}
-
+/*	
+	@Bean
+	public DefaultClassMapper typeMapper() {
+		DefaultClassMapper typeMapper = new DefaultClassMapper();
+		
+		HashMap<String, Class> idClassMapping = new HashMap<String, Class>();
+		idClassMapping.put("customer", Customer.class);
+		typeMapper.setIdClassMapping(idClassMapping);
+		
+		
+		return typeMapper;
+	}
+	
+	@Bean
+	public MessageConverter messageConverter() {
+		JsonMessageConverter jsonMessageConverter = new JsonMessageConverter();
+		jsonMessageConverter.setClassMapper(typeMapper);
+		return jsonMessageConverter;
+	}
+*/
 	@Bean
 	MessageListenerAdapter listenerAdapter(RabbitMQReceiver receiver) {
 		return new MessageListenerAdapter(receiver, "receiveMessage");
@@ -195,7 +221,7 @@ public class Application implements CommandLineRunner {
 
 
 
-			rabbitTemplate.convertAndSend(queueName, "Hello from Rainbow");
+			rabbitTemplate.convertAndSend(queueName, new Customer("Gowri", "Shankar"));
 			rabbitMQReceiver().getLatch().await(10000, TimeUnit.MILLISECONDS);
 			
 			//context.close();

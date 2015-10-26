@@ -2,11 +2,13 @@ package com.gs.rainbow.messaging.rabbitmq;
 
 import java.util.concurrent.CountDownLatch;
 
+import com.gs.rainbow.domain.Customer;
+
 public class RabbitMQReceiver {
 	private CountDownLatch latch = new CountDownLatch(1);
 
-	public void receiveMessage(String message) {
-		System.out.println(message);
+	public void receiveMessage(Customer customer) {
+		System.out.println(customer.toString());
 		latch.countDown();
 	}
 
